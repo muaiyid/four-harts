@@ -1,0 +1,20 @@
+{% extends 'base.html' %}
+{% block title %}تسجيل الدخول{% endblock %}
+{% block content %}
+<section class="auth-shell">
+  <div class="auth-card">
+    <div class="hero-chip">خاص بمالك المتجر فقط</div>
+    <h2>دخول Four Harts Pro</h2>
+    <p class="muted">نسخة جاهزة للجوال وقاعدة بيانات حقيقية.</p>
+    <form method="post" class="grid-form single-col">
+      <input name="username" placeholder="اسم المستخدم" required>
+      <input name="password" type="password" placeholder="كلمة المرور" required>
+      <button class="btn primary" type="submit">دخول</button>
+    </form>
+    <div class="note">
+      <strong>بيانات الدخول الافتراضية:</strong>
+      <div>admin / admin123</div>
+    </div>
+  </div>
+</section>
+{% endblock %}

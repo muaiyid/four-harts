@@ -1,0 +1,59 @@
+<!doctype html>
+<html lang="ar" dir="rtl">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>{% block title %}Four Harts Pro{% endblock %}</title>
+  <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body>
+  {% if session.get('user_id') %}
+  <button class="menu-toggle" onclick="document.body.classList.toggle('nav-open')">☰</button>
+  <aside class="sidebar">
+    <div>
+      <div class="brand-block">
+        <h1>Four Harts</h1>
+        <p class="muted">نظام إدارة محل الملابس</p>
+      </div>
+      <nav>
+        <a href="{{ url_for('main.dashboard') }}">لوحة التحكم</a>
+        <a href="{{ url_for('main.products') }}">المنتجات</a>
+        <a href="{{ url_for('main.suppliers') }}">الموردين</a>
+        <a href="{{ url_for('main.inventory') }}">المخزون</a>
+        <a href="{{ url_for('main.sales') }}">المبيعات</a>
+        <a href="{{ url_for('main.reports') }}">التقارير</a>
+        <a href="{{ url_for('main.settings') }}">الإعدادات</a>
+      </nav>
+    </div>
+    <div class="sidebar-footer">
+      <p class="muted">{{ session.get('full_name') }}</p>
+      <a class="logout" href="{{ url_for('main.logout') }}">تسجيل الخروج</a>
+    </div>
+  </aside>
+  <div class="sidebar-overlay" onclick="document.body.classList.remove('nav-open')"></div>
+  {% endif %}
+
+  <main class="content {% if not session.get('user_id') %}auth-layout{% endif %}">
+    {% with messages = get_flashed_messages(with_categories=true) %}
+      {% if messages %}
+        {% for category, message in messages %}
+          <div class="alert {{ category }}">{{ message }}</div>
+        {% endfor %}
+      {% endif %}
+    {% endwith %}
+    {% block content %}{% endblock %}
+  </main>
+
+  <script>
+    function addSaleRow() {
+      const container = document.getElementById('sale-items');
+      if (!container) return;
+      const firstRow = container.querySelector('.sale-row');
+      const clone = firstRow.cloneNode(true);
+      clone.querySelectorAll('input').forEach((input) => input.value = '');
+      clone.querySelectorAll('select').forEach((select) => select.selectedIndex = 0);
+      container.appendChild(clone);
+    }
+  </script>
+</body>
+</html>

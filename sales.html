@@ -1,0 +1,61 @@
+{% extends 'base.html' %}
+{% block title %}المبيعات{% endblock %}
+{% block content %}
+<div class="page-header">
+  <div>
+    <h2>المبيعات</h2>
+    <p class="muted">سجل الفواتير من الهاتف أو الكمبيوتر مع خصم وطريقة دفع.</p>
+  </div>
+</div>
+<section class="card">
+  <h3>فاتورة جديدة</h3>
+  <form method="post">
+    <div class="grid-form">
+      <input name="customer_name" placeholder="اسم العميل">
+      <select name="payment_method">
+        <option value="cash">نقدًا</option>
+        <option value="card">بطاقة</option>
+        <option value="transfer">تحويل</option>
+      </select>
+      <input name="discount" type="number" step="0.01" value="0" placeholder="الخصم">
+      <input name="note" placeholder="ملاحظة على الفاتورة">
+    </div>
+    <div id="sale-items" class="stack-list compact-stack">
+      <div class="grid-form sale-row compact form-box">
+        <select name="product_id[]" required>
+          <option value="">اختر المنتج</option>
+          {% for p in products %}
+          <option value="{{ p.id }}">{{ p.name }} · المتوفر {{ p.stock_qty }} · السعر {{ '%.2f'|format(p.sale_price) }}</option>
+          {% endfor %}
+        </select>
+        <input name="quantity[]" type="number" placeholder="الكمية" required>
+        <input name="unit_price[]" type="number" step="0.01" placeholder="سعر الوحدة">
+      </div>
+    </div>
+    <div class="actions-row">
+      <button type="button" class="btn" onclick="addSaleRow()">إضافة سطر جديد</button>
+      <button type="submit" class="btn primary">حفظ الفاتورة</button>
+    </div>
+  </form>
+</section>
+<section class="card">
+  <div class="table-wrap">
+    <table>
+      <tr><th>#</th><th>العميل</th><th>الدفع</th><th>قبل الخصم</th><th>الخصم</th><th>الإجمالي</th><th>التاريخ</th></tr>
+      {% for s in sales %}
+      <tr>
+        <td>{{ s.id }}</td>
+        <td>{{ s.customer_name or 'عميل مباشر' }}</td>
+        <td>{{ s.payment_method }}</td>
+        <td>{{ '%.2f'|format(s.subtotal) }}</td>
+        <td>{{ '%.2f'|format(s.discount) }}</td>
+        <td>{{ '%.2f'|format(s.total) }}</td>
+        <td>{{ s.created_at.strftime('%Y-%m-%d %H:%M') }}</td>
+      </tr>
+      {% else %}
+      <tr><td colspan="7">لا توجد مبيعات بعد.</td></tr>
+      {% endfor %}
+    </table>
+  </div>
+</section>
+{% endblock %}

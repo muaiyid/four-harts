@@ -1,0 +1,44 @@
+{% extends 'base.html' %}
+{% block title %}التقارير{% endblock %}
+{% block content %}
+<div class="page-header">
+  <div>
+    <h2>التقارير</h2>
+    <p class="muted">تقارير سريعة لمراقبة الأداء المالي والتشغيلي.</p>
+  </div>
+  <a class="btn primary" href="{{ url_for('main.export_sales') }}">تصدير CSV</a>
+</div>
+<div class="stats-grid">
+  <div class="stat-card"><span>إجمالي الإيرادات</span><strong>{{ '%.2f'|format(total_revenue) }}</strong></div>
+  <div class="stat-card"><span>إجمالي الخصومات</span><strong>{{ '%.2f'|format(total_discount) }}</strong></div>
+  <div class="stat-card"><span>إجمالي الربح التقريبي</span><strong>{{ '%.2f'|format(total_profit) }}</strong></div>
+</div>
+<div class="two-col">
+  <section class="card">
+    <h3>الأكثر مبيعًا</h3>
+    <div class="table-wrap">
+      <table>
+        <tr><th>المنتج</th><th>الكمية المباعة</th></tr>
+        {% for item in best_sellers %}
+        <tr><td>{{ item[0] }}</td><td>{{ item[1] }}</td></tr>
+        {% else %}
+        <tr><td colspan="2">لا توجد بيانات بعد.</td></tr>
+        {% endfor %}
+      </table>
+    </div>
+  </section>
+  <section class="card">
+    <h3>كل المبيعات</h3>
+    <div class="table-wrap">
+      <table>
+        <tr><th>#</th><th>العميل</th><th>الإجمالي</th><th>التاريخ</th></tr>
+        {% for s in sales %}
+        <tr><td>{{ s.id }}</td><td>{{ s.customer_name or 'عميل مباشر' }}</td><td>{{ '%.2f'|format(s.total) }}</td><td>{{ s.created_at.strftime('%Y-%m-%d') }}</td></tr>
+        {% else %}
+        <tr><td colspan="4">لا توجد بيانات بعد.</td></tr>
+        {% endfor %}
+      </table>
+    </div>
+  </section>
+</div>
+{% endblock %}

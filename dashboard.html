@@ -1,0 +1,52 @@
+{% extends 'base.html' %}
+{% block title %}لوحة التحكم{% endblock %}
+{% block content %}
+<div class="page-header">
+  <div>
+    <h2>لوحة التحكم</h2>
+    <p class="muted">ملخص سريع لأداء متجر Four Harts</p>
+  </div>
+</div>
+<div class="stats-grid">
+  <div class="stat-card"><span>عدد المنتجات</span><strong>{{ products_count }}</strong></div>
+  <div class="stat-card"><span>إجمالي القطع</span><strong>{{ stock_total }}</strong></div>
+  <div class="stat-card"><span>إجمالي المبيعات</span><strong>{{ '%.2f'|format(sales_total) }}</strong></div>
+  <div class="stat-card"><span>مبيعات اليوم</span><strong>{{ '%.2f'|format(today_sales) }}</strong></div>
+  <div class="stat-card"><span>عدد الموردين</span><strong>{{ suppliers_count }}</strong></div>
+  <div class="stat-card"><span>الربح التقريبي</span><strong>{{ '%.2f'|format(estimated_profit) }}</strong></div>
+</div>
+<div class="two-col">
+  <section class="card">
+    <div class="section-title">
+      <h3>تنبيه المخزون المنخفض</h3>
+      <span class="pill">{{ low_stock|length }} عناصر</span>
+    </div>
+    <div class="table-wrap">
+      <table>
+        <tr><th>المنتج</th><th>SKU</th><th>الكمية</th><th>الحد الأدنى</th></tr>
+        {% for p in low_stock %}
+        <tr><td>{{ p.name }}</td><td>{{ p.sku }}</td><td>{{ p.stock_qty }}</td><td>{{ p.min_stock }}</td></tr>
+        {% else %}
+        <tr><td colspan="4">لا توجد تنبيهات الآن.</td></tr>
+        {% endfor %}
+      </table>
+    </div>
+  </section>
+  <section class="card">
+    <div class="section-title">
+      <h3>آخر المبيعات</h3>
+      <span class="pill">أفضل منتج: {{ top_product[0] if top_product else '—' }}</span>
+    </div>
+    <div class="table-wrap">
+      <table>
+        <tr><th>#</th><th>العميل</th><th>الإجمالي</th><th>الوقت</th></tr>
+        {% for s in recent_sales %}
+        <tr><td>{{ s.id }}</td><td>{{ s.customer_name or 'عميل مباشر' }}</td><td>{{ '%.2f'|format(s.total) }}</td><td>{{ s.created_at.strftime('%Y-%m-%d %H:%M') }}</td></tr>
+        {% else %}
+        <tr><td colspan="4">لا توجد مبيعات بعد.</td></tr>
+        {% endfor %}
+      </table>
+    </div>
+  </section>
+</div>
+{% endblock %}

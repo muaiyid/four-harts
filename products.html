@@ -1,0 +1,88 @@
+{% extends 'base.html' %}
+{% block title %}المنتجات{% endblock %}
+{% block content %}
+<div class="page-header">
+  <div>
+    <h2>المنتجات</h2>
+    <p class="muted">أضف المنتجات واربط كل منتج بمورد واحد أو أكثر.</p>
+  </div>
+  <form method="get" class="search-form">
+    <input name="q" value="{{ search }}" placeholder="ابحث باسم المنتج أو SKU أو الفئة">
+  </form>
+</div>
+<section class="card">
+  <h3>إضافة منتج جديد</h3>
+  <form method="post" class="grid-form">
+    <input name="sku" placeholder="SKU" required>
+    <input name="name" placeholder="اسم المنتج" required>
+    <input name="category" placeholder="الفئة">
+    <input name="brand" placeholder="العلامة التجارية">
+    <input name="size" placeholder="المقاس">
+    <input name="color" placeholder="اللون">
+    <input name="barcode" placeholder="الباركود">
+    <input name="cost_price" type="number" step="0.01" placeholder="سعر الشراء">
+    <input name="sale_price" type="number" step="0.01" placeholder="سعر البيع">
+    <input name="stock_qty" type="number" placeholder="الكمية الحالية">
+    <input name="min_stock" type="number" placeholder="حد التنبيه" value="5">
+    <select name="supplier_ids" multiple class="multi-select">
+      {% for s in suppliers %}
+      <option value="{{ s.id }}">{{ s.name }}</option>
+      {% endfor %}
+    </select>
+    <textarea name="description" placeholder="وصف أو ملاحظات عن المنتج"></textarea>
+    <button class="btn primary" type="submit">حفظ المنتج</button>
+  </form>
+</section>
+<section class="card">
+  <div class="section-title"><h3>قائمة المنتجات</h3><span class="pill">{{ products|length }} منتج</span></div>
+  <div class="stack-list">
+    {% for p in products %}
+    <article class="list-card">
+      <div class="list-card-head">
+        <div>
+          <h4>{{ p.name }}</h4>
+          <div class="muted">SKU: {{ p.sku }}{% if p.category %} · {{ p.category }}{% endif %}</div>
+        </div>
+        <div class="price-box">{{ '%.2f'|format(p.sale_price) }}</div>
+      </div>
+      <div class="meta-row">
+        <span class="badge">المخزون: {{ p.stock_qty }}</span>
+        {% if p.size %}<span class="badge">المقاس: {{ p.size }}</span>{% endif %}
+        {% if p.color %}<span class="badge">اللون: {{ p.color }}</span>{% endif %}
+        {% if p.brand %}<span class="badge">{{ p.brand }}</span>{% endif %}
+      </div>
+      <div class="meta-row">
+        {% for s in p.suppliers %}<span class="badge soft">{{ s.name }}</span>{% else %}<span class="muted">بدون مورد</span>{% endfor %}
+      </div>
+      <details>
+        <summary class="btn small">تعديل المنتج</summary>
+        <form method="post" action="{{ url_for('main.edit_product', product_id=p.id) }}" class="grid-form compact">
+          <input name="name" value="{{ p.name }}" required>
+          <input name="category" value="{{ p.category }}">
+          <input name="brand" value="{{ p.brand }}">
+          <input name="size" value="{{ p.size }}">
+          <input name="color" value="{{ p.color }}">
+          <input name="barcode" value="{{ p.barcode }}">
+          <input name="cost_price" type="number" step="0.01" value="{{ p.cost_price }}">
+          <input name="sale_price" type="number" step="0.01" value="{{ p.sale_price }}">
+          <input name="stock_qty" type="number" value="{{ p.stock_qty }}">
+          <input name="min_stock" type="number" value="{{ p.min_stock }}">
+          <select name="supplier_ids" multiple class="multi-select">
+            {% for s in suppliers %}
+            <option value="{{ s.id }}" {% if s in p.suppliers %}selected{% endif %}>{{ s.name }}</option>
+            {% endfor %}
+          </select>
+          <textarea name="description">{{ p.description }}</textarea>
+          <button class="btn primary" type="submit">حفظ التعديلات</button>
+        </form>
+        <form method="post" action="{{ url_for('main.delete_product', product_id=p.id) }}">
+          <button class="btn danger" type="submit" onclick="return confirm('حذف المنتج؟')">حذف المنتج</button>
+        </form>
+      </details>
+    </article>
+    {% else %}
+    <div class="empty-box">لا توجد منتجات حتى الآن.</div>
+    {% endfor %}
+  </div>
+</section>
+{% endblock %}

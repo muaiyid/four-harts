@@ -1,0 +1,21 @@
+{% extends 'base.html' %}
+{% block title %}الإعدادات{% endblock %}
+{% block content %}
+<div class="page-header">
+  <div>
+    <h2>الإعدادات</h2>
+    <p class="muted">هذا النظام مصمم لاستخدامك الشخصي فقط.</p>
+  </div>
+</div>
+<section class="card narrow">
+  <h3>بيانات المدير</h3>
+  <form method="post" class="grid-form single-col">
+    <input name="full_name" value="{{ user.full_name }}" placeholder="الاسم الكامل">
+    <input value="{{ user.username }}" disabled>
+    <hr>
+    <input name="current_password" type="password" placeholder="كلمة المرور الحالية">
+    <input name="new_password" type="password" placeholder="كلمة المرور الجديدة">
+    <button class="btn primary" type="submit">حفظ الإعدادات</button>
+  </form>
+</section>
+{% endblock %}

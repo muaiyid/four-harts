@@ -1,0 +1,47 @@
+{% extends 'base.html' %}
+{% block title %}المخزون{% endblock %}
+{% block content %}
+<div class="page-header">
+  <div>
+    <h2>المخزون</h2>
+    <p class="muted">سجل الإدخال والإخراج والتسويات مع تحديث فوري للكمية.</p>
+  </div>
+</div>
+<section class="card">
+  <h3>إضافة حركة مخزون</h3>
+  <form method="post" class="grid-form">
+    <select name="product_id" required>
+      <option value="">اختر المنتج</option>
+      {% for p in products %}
+      <option value="{{ p.id }}">{{ p.name }} · المتوفر {{ p.stock_qty }}</option>
+      {% endfor %}
+    </select>
+    <select name="movement_type" required>
+      <option value="in">إدخال</option>
+      <option value="out">إخراج</option>
+      <option value="adjustment">تسوية</option>
+    </select>
+    <input name="quantity" type="number" placeholder="الكمية" required>
+    <input name="note" placeholder="ملاحظة">
+    <button class="btn primary" type="submit">حفظ الحركة</button>
+  </form>
+</section>
+<section class="card">
+  <div class="table-wrap">
+    <table>
+      <tr><th>المنتج</th><th>الحركة</th><th>الكمية</th><th>الملاحظة</th><th>التاريخ</th></tr>
+      {% for m in movements %}
+      <tr>
+        <td>{{ m.product.name }}</td>
+        <td>{{ m.movement_type }}</td>
+        <td>{{ m.quantity }}</td>
+        <td>{{ m.note }}</td>
+        <td>{{ m.created_at.strftime('%Y-%m-%d %H:%M') }}</td>
+      </tr>
+      {% else %}
+      <tr><td colspan="5">لا توجد حركات مخزون بعد.</td></tr>
+      {% endfor %}
+    </table>
+  </div>
+</section>
+{% endblock %}
