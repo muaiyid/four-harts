@@ -1,0 +1,13 @@
+services:
+  - type: web
+    name: four-harts-pro
+    env: python
+    buildCommand: pip install -r requirements.txt
+    startCommand: gunicorn app:app
+    envVars:
+      - key: SECRET_KEY
+        generateValue: true
+      - key: ADMIN_PASSWORD
+        value: change-me-now
+      - key: DATABASE_PATH
+        value: /opt/render/project/src/instance/four_harts.db
